@@ -4,7 +4,15 @@
 
 This document outlines the technical architecture and logic of the **WatchTheRisk** application. The primary function of this application is to provide loan officers with an AI-powered tool to assess the credit risk of a loan applicant and determine an appropriate approved loan amount and interest rate.
 
-The system takes applicant financial data as input, processes it through a generative AI model, and returns a structured risk assessment, including a recommended loan amount.
+The system takes applicant financial data as input, processes it through a **generative AI model**, and returns a structured risk assessment, including a recommended loan amount.
+
+### AI Methodology: Generative AI vs. Traditional Machine Learning
+
+It is important to clarify that this application **does not use a traditional predictive machine learning model** like linear regression. Instead, it leverages a powerful, general-purpose **Large Language Model (LLM)**.
+
+- **Traditional ML (e.g., Linear Regression):** These models are trained on historical data to find mathematical patterns and make predictions. They are excellent for specific, quantitative tasks but lack the ability to provide qualitative reasoning or handle unstructured text.
+
+- **Generative AI (LLM):** This application delegates the decision-making process to an LLM. By providing the AI with a clear role ("expert credit risk analyst"), structured data, and explicit instructions via a prompt, we empower it to reason about the applicant's profile holistically. This approach allows the model to interpret both quantitative data (like credit score) and qualitative data (like employment history) to produce a nuanced assessment with human-readable justifications, which is a key requirement for this tool.
 
 ## 2. System Architecture
 
