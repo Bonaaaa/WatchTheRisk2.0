@@ -13,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
         )}
         ref={ref}
         {...props}
-        data-fdprocessedid-ignore={true}
+        data-fdprocessedid-ignore="true"
       />
     )
   }
