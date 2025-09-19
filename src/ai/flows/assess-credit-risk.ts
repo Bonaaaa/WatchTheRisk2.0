@@ -14,6 +14,8 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const AssessCreditRiskInputSchema = z.object({
+  name: z.string().describe('Name of the loan applicant.'),
+  email: z.string().email().describe('Email of the loan applicant.'),
   income: z
     .number()
     .describe('Annual income of the loan applicant (in USD).'),
@@ -74,6 +76,8 @@ const assessCreditRiskPrompt = ai.definePrompt({
   prompt: `You are an expert credit risk analyst. Evaluate the credit risk of a loan applicant based on the following information and suggest loan terms.
 
 Applicant Data:
+Name: {{name}}
+Email: {{email}}
 Income: {{income}}
 Credit Score: {{creditScore}}
 Loan Amount Requested: {{loanAmount}}
