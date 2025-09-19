@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
-import type { Candidate } from "../data";
+import type { Candidate } from "../service";
 
 type CandidatesTableProps = {
   data: Candidate[];

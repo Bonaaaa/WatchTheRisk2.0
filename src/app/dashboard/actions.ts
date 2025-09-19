@@ -1,6 +1,7 @@
 "use server";
 
 import { assessCreditRisk, AssessCreditRiskInput } from "@/ai/flows/assess-credit-risk";
+import { addCandidate } from "@/app/candidates/service";
 
 export async function handleAssessCreditRisk(input: AssessCreditRiskInput) {
     const validatedInput = {
@@ -12,5 +13,16 @@ export async function handleAssessCreditRisk(input: AssessCreditRiskInput) {
         debtToIncomeRatio: Number(input.debtToIncomeRatio),
     };
     const result = await assessCreditRisk(validatedInput);
+
+    // Add the assessed candidate to our "database"
+    addCandidate({
+      name: validatedInput.name,
+      email: validatedInput.email,
+      creditScore: validatedInput.creditScore,
+      loanAmount: validatedInput.loanAmount,
+      risk: result.riskAssessment as "Low" | "Medium" | "High",
+      status: result.approvedLoanAmount > 0 ? "Pending" : "Rejected",
+    });
+
     return result;
 }

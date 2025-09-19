@@ -1,10 +1,12 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { CandidatesTable } from "./components/candidates-table";
-import { candidates } from "./data";
+import { getCandidates } from "./service";
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 
 export default function CandidatesPage() {
+  const candidates = getCandidates();
+
   return (
     <Card>
       <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
