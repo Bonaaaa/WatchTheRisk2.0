@@ -26,10 +26,9 @@ export function CandidatesTable({ data }: CandidatesTableProps) {
     }
   };
 
-  const getStatusBadgeVariant = (status: "Pending" | "Approved" | "Rejected"): BadgeProps['variant'] => {
+  const getStatusBadgeVariant = (status: "Approved" | "Rejected"): BadgeProps['variant'] => {
     switch (status) {
         case 'Approved': return 'default';
-        case 'Pending': return 'secondary';
         case 'Rejected': return 'destructive';
     }
 };

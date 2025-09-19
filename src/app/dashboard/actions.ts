@@ -21,7 +21,7 @@ export async function handleAssessCreditRisk(input: AssessCreditRiskInput) {
       creditScore: validatedInput.creditScore,
       loanAmount: validatedInput.loanAmount,
       risk: result.riskAssessment as "Low" | "Medium" | "High",
-      status: result.approvedLoanAmount > 0 ? "Pending" : "Rejected",
+      status: result.approvedLoanAmount > 0 ? "Approved" : "Rejected",
     });
 
     return result;
