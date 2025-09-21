@@ -1,5 +1,3 @@
-# Firebase Studio
+# WatchTheRisk
 
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+WatchTheRisk is an AI-powered prototype that allows loan officers to assess the credit risk of applicants. It analyzes financial data to provide a comprehensive risk assessment, including a recommended loan amount and interest rate.
