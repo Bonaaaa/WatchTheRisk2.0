@@ -25,13 +25,35 @@ export async function handleAssessCreditRisk(input: AssessCreditRiskInput) {
       status: result.approvedLoanAmount > 0 ? "Approved" : "Rejected",
     });
 
+    // Revalidate the candidates page to show the new entry
+    revalidatePath('/candidates');
+
     return result;
 }
 
 
 export async function handleBatchAssess(candidates: AssessCreditRiskInput[]) {
     for (const candidate of candidates) {
-        await handleAssessCreditRisk(candidate);
+        // We don't need to revalidate inside the loop for each one
+        // So we call a simpler version of the assess logic
+        const validatedInput = {
+            ...candidate,
+            income: Number(candidate.income),
+            creditScore: Number(candidate.creditScore),
+            loanAmount: Number(candidate.loanAmount),
+            loanDuration: Number(candidate.loanDuration),
+            debtToIncomeRatio: Number(candidate.debtToIncomeRatio),
+        };
+        const result = await assessCreditRisk(validatedInput);
+        addCandidate({
+          name: validatedInput.name,
+          email: validatedInput.email,
+          creditScore: validatedInput.creditScore,
+          loanAmount: validatedInput.loanAmount,
+          risk: result.riskAssessment as "Low" | "Medium" | "High",
+          status: result.approvedLoanAmount > 0 ? "Approved" : "Rejected",
+        });
     }
+    // Revalidate once after the batch is processed
     revalidatePath('/candidates');
 }
