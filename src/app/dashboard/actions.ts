@@ -33,9 +33,9 @@ export async function handleAssessCreditRisk(input: AssessCreditRiskInput) {
 
 
 export async function handleBatchAssess(candidates: AssessCreditRiskInput[]) {
-    for (const candidate of candidates) {
-        // We don't need to revalidate inside the loop for each one
-        // So we call a simpler version of the assess logic
+    // We don't want to revalidate for every single record in the batch.
+    // So we'll call a simpler version of the assess logic.
+    const assessAndAdd = async (candidate: AssessCreditRiskInput) => {
         const validatedInput = {
             ...candidate,
             income: Number(candidate.income),
@@ -53,7 +53,11 @@ export async function handleBatchAssess(candidates: AssessCreditRiskInput[]) {
           risk: result.riskAssessment as "Low" | "Medium" | "High",
           status: result.approvedLoanAmount > 0 ? "Approved" : "Rejected",
         });
-    }
-    // Revalidate once after the batch is processed
+    };
+
+    // Process all candidates
+    await Promise.all(candidates.map(c => assessAndAdd(c)));
+
+    // Revalidate once after the entire batch is processed
     revalidatePath('/candidates');
 }

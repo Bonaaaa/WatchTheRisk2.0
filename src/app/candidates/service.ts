@@ -13,14 +13,14 @@ export type Candidate = {
   
 let candidates: Candidate[] = [];
 
-let nextId = candidates.length + 1;
+let nextId = 1;
 
 export function getCandidates(): Candidate[] {
     // Return a copy to prevent direct modification of the in-memory store
     return [...candidates].sort((a, b) => Number(b.id.split('-')[1]) - Number(a.id.split('-')[1]));
 }
 
-export function addCandidate(data: Omit<Candidate, 'id' | 'status'> & { status: "Approved" | "Rejected" }) {
+export function addCandidate(data: Omit<Candidate, 'id'>) {
     const newId = `CAND-${String(nextId++).padStart(3, '0')}`;
     const newCandidate: Candidate = {
         ...data,

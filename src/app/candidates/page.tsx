@@ -3,6 +3,8 @@ import { CandidatesTable } from "./components/candidates-table";
 import { getCandidates } from "./service";
 import { Importer } from "./components/importer";
 
+export const dynamic = 'force-dynamic';
+
 export default function CandidatesPage() {
   const candidates = getCandidates();
 
