@@ -5,8 +5,8 @@ import { Importer } from "./components/importer";
 
 export const dynamic = 'force-dynamic';
 
-export default function CandidatesPage() {
-  const candidates = getCandidates();
+export default async function CandidatesPage() {
+  const candidates = await getCandidates();
 
   return (
     <Card>
