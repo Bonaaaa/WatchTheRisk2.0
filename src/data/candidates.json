@@ -6,6 +6,7 @@
     "loanAmount": 20000,
     "risk": "Low",
     "status": "Approved",
-    "id": "CAND-001"
+    "id": "CAND-001",
+    "riskFactors": "- Consistent income\n- Good credit score"
   }
 ]

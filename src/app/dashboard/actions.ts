@@ -27,6 +27,7 @@ export async function handleSaveCandidate(applicantData: AssessCreditRiskInput, 
         loanAmount: Number(applicantData.loanAmount),
         risk: assessmentResult.riskAssessment as "Low" | "Medium" | "High",
         status: assessmentResult.approvedLoanAmount > 0 ? "Approved" : "Rejected",
+        riskFactors: assessmentResult.riskFactors,
     });
 
     // Revalidate the candidates page to show the new entry

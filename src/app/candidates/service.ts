@@ -11,6 +11,7 @@ export type Candidate = {
     creditScore: number;
     loanAmount: number;
     status: "Approved" | "Rejected";
+    riskFactors: string;
 };
 
 // Use a JSON file for persistence.
@@ -71,4 +72,16 @@ export async function addCandidate(data: Omit<Candidate, 'id'>) {
     writeData(candidates);
     
     return newCandidate;
+}
+
+export async function deleteCandidate(id: string) {
+    let candidates = readData();
+    const initialLength = candidates.length;
+    candidates = candidates.filter(candidate => candidate.id !== id);
+
+    if (candidates.length < initialLength) {
+        writeData(candidates);
+        return { success: true };
+    }
+    return { success: false, message: "Candidate not found." };
 }
