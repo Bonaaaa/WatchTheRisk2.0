@@ -9,12 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import type { Candidate } from "../service";
 import { Button } from "@/components/ui/button";
@@ -75,58 +69,39 @@ export function CandidatesTable({ data }: CandidatesTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Candidate</TableHead>
+            <TableHead className="w-[40%]">Candidate</TableHead>
             <TableHead className="hidden sm:table-cell">Risk</TableHead>
             <TableHead className="hidden md:table-cell">Credit Score</TableHead>
             <TableHead>Loan Amount</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="w-[80px] text-right">Actions</TableHead>
-            <TableHead className="w-[40px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((candidate) => (
-            <React.Fragment key={candidate.id}>
-              <TableRow>
-                <TableCell>
-                  <div className="font-medium">{candidate.name}</div>
-                  <div className="text-sm text-muted-foreground hidden sm:inline">{candidate.email}</div>
-                </TableCell>
-                <TableCell className="hidden sm:table-cell">
-                  <Badge variant={getRiskBadgeVariant(candidate.risk)}>{candidate.risk}</Badge>
-                </TableCell>
-                <TableCell className="hidden md:table-cell">{candidate.creditScore}</TableCell>
-                <TableCell>${candidate.loanAmount.toLocaleString()}</TableCell>
-                <TableCell>
-                  <Badge variant={getStatusBadgeVariant(candidate.status)}>{candidate.status}</Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button variant="ghost" size="icon" onClick={() => onDelete(candidate.id, candidate.name)}>
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete</span>
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  {/* This cell will contain the accordion trigger */}
-                </TableCell>
-              </TableRow>
-              {/* The Accordion content will be in a separate row that spans all columns */}
-              <TableRow>
-                  <TableCell colSpan={7} className="p-0">
-                      <Accordion type="single" collapsible>
-                          <AccordionItem value={candidate.id} className="border-b-0">
-                              {/* We need a dummy trigger, let's put it in the previous row */}
-                              <AccordionContent>
-                                  <div className="p-4 bg-muted/50">
-                                      <h4 className="font-semibold mb-2 text-sm">Key Risk Factors</h4>
-                                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{candidate.riskFactors}</p>
-                                  </div>
-                              </AccordionContent>
-                          </AccordionItem>
-                      </Accordion>
-                  </TableCell>
-              </TableRow>
-            </React.Fragment>
+            <TableRow key={candidate.id}>
+              <TableCell>
+                <div className="font-medium">{candidate.name}</div>
+                <div className="text-sm text-muted-foreground mb-2">{candidate.email}</div>
+                <p className="text-xs text-muted-foreground whitespace-pre-wrap lg:max-w-md">
+                  {candidate.riskFactors}
+                </p>
+              </TableCell>
+              <TableCell className="hidden sm:table-cell align-top">
+                <Badge variant={getRiskBadgeVariant(candidate.risk)}>{candidate.risk}</Badge>
+              </TableCell>
+              <TableCell className="hidden md:table-cell align-top">{candidate.creditScore}</TableCell>
+              <TableCell className="align-top">${candidate.loanAmount.toLocaleString()}</TableCell>
+              <TableCell className="align-top">
+                <Badge variant={getStatusBadgeVariant(candidate.status)}>{candidate.status}</Badge>
+              </TableCell>
+              <TableCell className="text-right align-top">
+                <Button variant="ghost" size="icon" onClick={() => onDelete(candidate.id, candidate.name)}>
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Delete</span>
+                </Button>
+              </TableCell>
+            </TableRow>
           ))}
         </TableBody>
       </Table>

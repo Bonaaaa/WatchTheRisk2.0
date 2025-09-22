@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "creditScore": 720,
+    "loanAmount": 20000,
+    "risk": "Low",
+    "status": "Approved",
+    "riskFactors": "The applicant exhibits a strong credit profile with a good credit score (720), a healthy annual income of $75,000, and an exceptionally low Debt-to-Income Ratio of 0.3 (30%), indicating significant capacity for repayment and a high likelihood of fulfilling their obligations. The requested loan amount of $20,000 is also well within their financial means.",
+    "id": "CAND-001"
+  }
+]
