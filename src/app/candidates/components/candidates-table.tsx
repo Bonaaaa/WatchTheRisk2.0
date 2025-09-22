@@ -62,58 +62,74 @@ export function CandidatesTable({ data }: CandidatesTableProps) {
     }
   }
 
+  if (data.length === 0) {
+    return (
+      <div className="text-center text-muted-foreground p-8 rounded-md border">
+        No candidates have been saved yet.
+      </div>
+    )
+  }
+
   return (
-    <Accordion type="single" collapsible className="w-full">
-        <div className="rounded-md border">
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>Candidate</TableHead>
-                    <TableHead className="hidden sm:table-cell">Risk</TableHead>
-                    <TableHead className="hidden md:table-cell">Credit Score</TableHead>
-                    <TableHead>Loan Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="w-[80px] text-right">Actions</TableHead>
-                    <TableHead className="w-[40px]"></TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {data.map((candidate) => (
-                    <AccordionItem value={candidate.id} key={candidate.id} className="border-b">
-                         <TableRow>
-                            <TableCell>
-                                <div className="font-medium">{candidate.name}</div>
-                                <div className="text-sm text-muted-foreground hidden sm:inline">{candidate.email}</div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                                <Badge variant={getRiskBadgeVariant(candidate.risk)}>{candidate.risk}</Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">{candidate.creditScore}</TableCell>
-                            <TableCell>${candidate.loanAmount.toLocaleString()}</TableCell>
-                            <TableCell>
-                                <Badge variant={getStatusBadgeVariant(candidate.status)}>{candidate.status}</Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <Button variant="ghost" size="icon" onClick={() => onDelete(candidate.id, candidate.name)}>
-                                    <Trash2 className="h-4 w-4" />
-                                    <span className="sr-only">Delete</span>
-                                </Button>
-                            </TableCell>
-                             <TableCell>
-                                 <AccordionTrigger className="p-0 [&[data-state=open]>svg]:rotate-180" />
-                             </TableCell>
-                        </TableRow>
-                        <AccordionContent>
-                            <div className="p-4 bg-muted/50">
-                                <h4 className="font-semibold mb-2 text-sm">Key Risk Factors</h4>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{candidate.riskFactors}</p>
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                ))}
-                </TableBody>
-            </Table>
-        </div>
-    </Accordion>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Candidate</TableHead>
+            <TableHead className="hidden sm:table-cell">Risk</TableHead>
+            <TableHead className="hidden md:table-cell">Credit Score</TableHead>
+            <TableHead>Loan Amount</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="w-[80px] text-right">Actions</TableHead>
+            <TableHead className="w-[40px]"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((candidate) => (
+            <React.Fragment key={candidate.id}>
+              <TableRow>
+                <TableCell>
+                  <div className="font-medium">{candidate.name}</div>
+                  <div className="text-sm text-muted-foreground hidden sm:inline">{candidate.email}</div>
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <Badge variant={getRiskBadgeVariant(candidate.risk)}>{candidate.risk}</Badge>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">{candidate.creditScore}</TableCell>
+                <TableCell>${candidate.loanAmount.toLocaleString()}</TableCell>
+                <TableCell>
+                  <Badge variant={getStatusBadgeVariant(candidate.status)}>{candidate.status}</Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="icon" onClick={() => onDelete(candidate.id, candidate.name)}>
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete</span>
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  {/* This cell will contain the accordion trigger */}
+                </TableCell>
+              </TableRow>
+              {/* The Accordion content will be in a separate row that spans all columns */}
+              <TableRow>
+                  <TableCell colSpan={7} className="p-0">
+                      <Accordion type="single" collapsible>
+                          <AccordionItem value={candidate.id} className="border-b-0">
+                              {/* We need a dummy trigger, let's put it in the previous row */}
+                              <AccordionContent>
+                                  <div className="p-4 bg-muted/50">
+                                      <h4 className="font-semibold mb-2 text-sm">Key Risk Factors</h4>
+                                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{candidate.riskFactors}</p>
+                                  </div>
+                              </AccordionContent>
+                          </AccordionItem>
+                      </Accordion>
+                  </TableCell>
+              </TableRow>
+            </React.Fragment>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
