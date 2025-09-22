@@ -62,24 +62,26 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-5">
-      <Card className="lg:col-span-2 h-fit">
-        <CardHeader>
-          <CardTitle className="font-headline">New Assessment</CardTitle>
-          <CardDescription>Enter applicant details to assess credit risk.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <RiskAssessmentForm onAssess={onAssess} isLoading={isLoading} />
-        </CardContent>
-      </Card>
-      <div className="lg:col-span-3">
-        <RiskAssessmentResults 
-            result={fullResult?.assessmentResult ?? null} 
-            isLoading={isLoading} 
-            isSaved={isSaved}
-            onSave={onSave}
-        />
-      </div>
+    <div className="container mx-auto max-w-screen-2xl">
+        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-5">
+            <Card className="lg:col-span-2 h-fit">
+                <CardHeader>
+                <CardTitle className="font-headline">New Assessment</CardTitle>
+                <CardDescription>Enter applicant details to assess credit risk.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                <RiskAssessmentForm onAssess={onAssess} isLoading={isLoading} />
+                </CardContent>
+            </Card>
+            <div className="lg:col-span-3">
+                <RiskAssessmentResults 
+                    result={fullResult?.assessmentResult ?? null} 
+                    isLoading={isLoading} 
+                    isSaved={isSaved}
+                    onSave={onSave}
+                />
+            </div>
+        </div>
     </div>
   );
 }

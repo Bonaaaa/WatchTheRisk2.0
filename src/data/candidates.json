@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "creditScore": 720,
+    "loanAmount": 20000,
+    "risk": "Low",
+    "status": "Approved",
+    "riskFactors": "Applicant presents a low credit risk due to a strong credit score (720), a very favorable debt-to-income ratio (0.3), and a stable income of $75,000. These factors indicate a high likelihood of repayment for the requested loan amount.",
+    "id": "CAND-001"
+  }
+]
