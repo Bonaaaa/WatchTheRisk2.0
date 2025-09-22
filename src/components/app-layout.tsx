@@ -56,7 +56,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <span className="sr-only">Check Status</span>
             </Button>
         </header>
-        <main className="flex-1 p-4 sm:p-6 bg-background">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 bg-background">
+          <div className="container mx-auto max-w-screen-2xl">
+            {children}
+          </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
