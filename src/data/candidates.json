@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "creditScore": 720,
+    "loanAmount": 20000,
+    "risk": "Low",
+    "status": "Approved",
+    "id": "CAND-001"
+  }
+]

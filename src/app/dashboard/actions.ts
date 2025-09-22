@@ -20,7 +20,7 @@ export async function handleAssessCreditRisk(input: AssessCreditRiskInput) {
 
 // This new action is dedicated to saving the candidate.
 export async function handleSaveCandidate(applicantData: AssessCreditRiskInput, assessmentResult: AssessCreditRiskOutput) {
-    addCandidate({
+    await addCandidate({
         name: applicantData.name,
         email: applicantData.email,
         creditScore: Number(applicantData.creditScore),
@@ -30,36 +30,5 @@ export async function handleSaveCandidate(applicantData: AssessCreditRiskInput, 
     });
 
     // Revalidate the candidates page to show the new entry
-    revalidatePath('/candidates');
-}
-
-
-export async function handleBatchAssess(candidates: AssessCreditRiskInput[]) {
-    // We don't want to revalidate for every single record in the batch.
-    // So we'll call a simpler version of the assess logic.
-    const assessAndAdd = async (candidate: AssessCreditRiskInput) => {
-        const validatedInput = {
-            ...candidate,
-            income: Number(candidate.income),
-            creditScore: Number(candidate.creditScore),
-            loanAmount: Number(candidate.loanAmount),
-            loanDuration: Number(candidate.loanDuration),
-            debtToIncomeRatio: Number(candidate.debtToIncomeRatio),
-        };
-        const result = await assessCreditRisk(validatedInput);
-        addCandidate({
-          name: validatedInput.name,
-          email: validatedInput.email,
-          creditScore: validatedInput.creditScore,
-          loanAmount: validatedInput.loanAmount,
-          risk: result.riskAssessment as "Low" | "Medium" | "High",
-          status: result.approvedLoanAmount > 0 ? "Approved" : "Rejected",
-        });
-    };
-
-    // Process all candidates
-    await Promise.all(candidates.map(c => assessAndAdd(c)));
-
-    // Revalidate once after the entire batch is processed
     revalidatePath('/candidates');
 }

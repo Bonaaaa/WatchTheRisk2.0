@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { CandidatesTable } from "./components/candidates-table";
 import { getCandidates } from "./service";
-import { Importer } from "./components/importer";
+import { Exporter } from "./components/exporter";
 
 export const dynamic = 'force-dynamic';
 
@@ -14,10 +14,10 @@ export default async function CandidatesPage() {
         <div>
             <CardTitle className="font-headline">Loanee Candidates</CardTitle>
             <CardDescription>
-                A preview of loanee candidates. Use the button to import a CSV file.
+                A preview of loanee candidates. Use the button to export a CSV file.
             </CardDescription>
         </div>
-        <Importer />
+        <Exporter />
       </CardHeader>
       <CardContent>
         <CandidatesTable data={candidates} />
