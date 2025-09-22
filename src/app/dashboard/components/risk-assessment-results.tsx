@@ -1,12 +1,16 @@
 import type { AssessmentResult } from "@/lib/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import ResultsChart from './results-chart';
+import { Button } from "@/components/ui/button";
+import { UserPlus, CheckCircle } from "lucide-react";
 
 type RiskAssessmentResultsProps = {
   result: AssessmentResult | null;
   isLoading: boolean;
+  isSaved: boolean;
+  onSave: () => void;
 };
 
 function getRiskBadgeVariant(risk: string) : "default" | "secondary" | "destructive" | "outline" {
@@ -18,7 +22,7 @@ function getRiskBadgeVariant(risk: string) : "default" | "secondary" | "destruct
   }
 }
 
-export default function RiskAssessmentResults({ result, isLoading }: RiskAssessmentResultsProps) {
+export default function RiskAssessmentResults({ result, isLoading, isSaved, onSave }: RiskAssessmentResultsProps) {
   if (isLoading) {
     return <ResultsSkeleton />;
   }
@@ -38,38 +42,59 @@ export default function RiskAssessmentResults({ result, isLoading }: RiskAssessm
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
+      <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-medium">Risk Assessment</CardTitle>
+              <CardTitle className="font-headline">Assessment Complete</CardTitle>
           </CardHeader>
-          <CardContent>
-            <Badge variant={riskBadgeVariant} className="text-lg px-3 py-1">
-              {result.riskAssessment}
-            </Badge>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Approved Loan</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              ${result.approvedLoanAmount.toLocaleString()}
+          <CardContent className="space-y-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <Card>
+                <CardHeader>
+                    <CardTitle className="text-sm font-medium">Risk Assessment</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Badge variant={riskBadgeVariant} className="text-lg px-3 py-1">
+                    {result.riskAssessment}
+                    </Badge>
+                </CardContent>
+                </Card>
+                <Card>
+                <CardHeader>
+                    <CardTitle className="text-sm font-medium">Approved Loan</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-3xl font-bold">
+                    ${result.approvedLoanAmount.toLocaleString()}
+                    </div>
+                </CardContent>
+                </Card>
+                <Card>
+                <CardHeader>
+                    <CardTitle className="text-sm font-medium">Interest Rate</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-3xl font-bold">
+                    {result.recommendedInterestRate.toFixed(2)}%
+                    </div>
+                </CardContent>
+                </Card>
             </div>
           </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Interest Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {result.recommendedInterestRate.toFixed(2)}%
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          <CardFooter>
+            {isSaved ? (
+                <Button variant="outline" disabled className="w-full">
+                    <CheckCircle className="mr-2" />
+                    Saved to Candidates
+                </Button>
+            ) : (
+                <Button onClick={onSave} className="w-full">
+                    <UserPlus className="mr-2" />
+                    Save to Candidates
+                </Button>
+            )}
+          </CardFooter>
+      </Card>
+
 
       <Card>
         <CardHeader>
@@ -98,11 +123,21 @@ export default function RiskAssessmentResults({ result, isLoading }: RiskAssessm
 function ResultsSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card><CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent><Skeleton className="h-8 w-1/2" /></CardContent></Card>
-        <Card><CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent><Skeleton className="h-8 w-1/2" /></CardContent></Card>
-        <Card><CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent><Skeleton className="h-8 w-1/2" /></CardContent></Card>
-      </div>
+      <Card>
+          <CardHeader>
+              <Skeleton className="h-6 w-1/2" />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <Card><CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent><Skeleton className="h-8 w-1/2" /></CardContent></Card>
+                <Card><CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent><Skeleton className="h-8 w-1/2" /></CardContent></Card>
+                <Card><CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent><Skeleton className="h-8 w-1/2" /></CardContent></Card>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Skeleton className="h-10 w-full" />
+          </CardFooter>
+      </Card>
       <Card><CardHeader><Skeleton className="h-6 w-1/2" /></CardHeader><CardContent><Skeleton className="h-64 w-full" /></CardContent></Card>
       <Card><CardHeader><Skeleton className="h-6 w-1/2" /></CardHeader><CardContent><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-5/6 mt-2" /></CardContent></Card>
     </div>
