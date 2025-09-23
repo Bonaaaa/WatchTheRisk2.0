@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AppLayout } from '@/components/app-layout';
 import { Toaster } from '@/components/ui/toaster';
+import { StorageIndicator } from '@/components/storage-indicator';
 
 export const metadata: Metadata = {
   title: 'WatchTheRisk - Credit Risk Assessment',
@@ -25,6 +26,7 @@ export default function RootLayout({
           {children}
         </AppLayout>
         <Toaster />
+        <StorageIndicator />
       </body>
     </html>
   );
