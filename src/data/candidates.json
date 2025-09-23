@@ -1,12 +1,22 @@
 [
   {
-    "name": "John Doe",
-    "email": "john.doe@example.com",
+    "name": "Max",
+    "email": "max@example.com",
+    "creditScore": 610,
+    "loanAmount": 20000,
+    "risk": "High",
+    "status": "Rejected",
+    "riskFactors": "The primary risk factor is the applicant's low credit score of 610, which indicates a significant risk of default and a history of credit challenges. While the debt-to-income ratio (0.2) is favorable and income of $75,000 suggests repayment capacity, the poor credit history heavily outweighs these mitigating factors for an unsecured loan of this amount.",
+    "id": "CAND-002"
+  },
+  {
+    "name": "Martyn",
+    "email": "martyn@example.com",
     "creditScore": 720,
     "loanAmount": 20000,
     "risk": "Low",
     "status": "Approved",
-    "riskFactors": "The applicant exhibits a strong credit profile with a good credit score (720), a healthy annual income of $75,000, and an exceptionally low Debt-to-Income Ratio of 0.3 (30%), indicating significant capacity for repayment and a high likelihood of fulfilling their obligations. The requested loan amount of $20,000 is also well within their financial means.",
-    "id": "CAND-001"
+    "riskFactors": "Martyn presents a low credit risk due to a strong credit score (720), highly stable government employment, a robust annual income of $75,000, and an exceptionally low debt-to-income ratio of 0.3. These factors collectively indicate a high likelihood of timely repayment.",
+    "id": "CAND-003"
   }
 ]
