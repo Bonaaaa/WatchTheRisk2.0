@@ -1,6 +1,6 @@
 "use server";
 
-import { getStore } from '@netlify/sdk';
+import { getCandidatesStore } from '@/lib/netlify-store';
 
 export type Candidate = {
     id: string;
@@ -11,73 +11,131 @@ export type Candidate = {
     loanAmount: number;
     status: "Approved" | "Rejected";
     riskFactors: string;
+    createdAt: string;
 };
 
-// Define the key for the blob store
-const CANDIDATES_KEY = "candidates";
+const CANDIDATES_KEY = 'candidates-data';
+const COUNTER_KEY = 'candidates-counter';
 
-async function readData(): Promise<Candidate[]> {
+async function readCandidates(): Promise<Candidate[]> {
     try {
-        const store = getStore(CANDIDATES_KEY);
+        const store = getCandidatesStore();
         const data = await store.get(CANDIDATES_KEY, { type: 'json' });
-        return (data as Candidate[]) || [];
+        
+        if (!data) {
+            return [];
+        }
+        
+        return data as Candidate[];
     } catch (error) {
-        console.error("Error reading candidates data from blob store:", error);
-        // If the store is empty or there's an error, return an empty array
+        console.error("Error reading candidates from Netlify Blob:", error);
         return [];
     }
 }
 
-async function writeData(data: Candidate[]) {
+async function writeCandidates(candidates: Candidate[]): Promise<void> {
     try {
-        const store = getStore(CANDIDATES_KEY);
-        await store.setJSON(CANDIDATES_KEY, data);
+        const store = getCandidatesStore();
+        await store.setJSON(CANDIDATES_KEY, candidates);
     } catch (error) {
-        console.error("Error writing candidates data to blob store:", error);
+        console.error("Error writing candidates to Netlify Blob:", error);
+        throw new Error("Failed to save data");
     }
 }
 
+async function getNextId(): Promise<string> {
+    try {
+        const store = getCandidatesStore();
+        
+        const counterData = await store.get(COUNTER_KEY, { type: 'json' });
+        let counter = 1;
+        
+        if (counterData && typeof counterData === 'object' && 'value' in counterData) {
+            counter = (counterData as { value: number }).value + 1;
+        }
+        
+        await store.setJSON(COUNTER_KEY, { value: counter });
+        
+        return `CAND-${String(counter).padStart(3, '0')}`;
+    } catch (error) {
+        console.error("Error generating ID:", error);
+        return `CAND-${Date.now()}`;
+    }
+}
 
 export async function getCandidates(): Promise<Candidate[]> {
-    const candidates = await readData();
-    // Sort by ID descending to show newest first
+    const candidates = await readCandidates();
+    
     return candidates.sort((a, b) => {
-        const idA = a.id.split('-')[1] || '0';
-        const idB = b.id.split('-')[1] || '0';
-        return Number(idB) - Number(idA);
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
     });
 }
 
-export async function addCandidate(data: Omit<Candidate, 'id'>) {
-    const candidates = await readData();
-    
-    // Determine the next ID
-    const nextIdNumber = candidates.reduce((maxId, candidate) => {
-        const currentId = parseInt(candidate.id.split('-')[1], 10);
-        return currentId > maxId ? currentId : maxId;
-    }, 0) + 1;
-
-    const newId = `CAND-${String(nextIdNumber).padStart(3, '0')}`;
-    
-    const newCandidate: Candidate = {
-        ...data,
-        id: newId,
-    };
-    
-    candidates.push(newCandidate);
-    await writeData(candidates);
-    
-    return newCandidate;
+export async function addCandidate(data: Omit<Candidate, 'id' | 'createdAt'>): Promise<Candidate> {
+    try {
+        const candidates = await readCandidates();
+        const newId = await getNextId();
+        
+        const newCandidate: Candidate = {
+            ...data,
+            id: newId,
+            createdAt: new Date().toISOString(),
+        };
+        
+        candidates.push(newCandidate);
+        await writeCandidates(candidates);
+        
+        console.log(`Successfully saved candidate: ${newId}`);
+        return newCandidate;
+    } catch (error) {
+        console.error("Error adding candidate:", error);
+        throw new Error("Failed to save candidate");
+    }
 }
 
-export async function deleteCandidate(id: string) {
-    let candidates = await readData();
-    const initialLength = candidates.length;
-    candidates = candidates.filter(candidate => candidate.id !== id);
-
-    if (candidates.length < initialLength) {
-        await writeData(candidates);
+export async function deleteCandidate(id: string): Promise<{ success: boolean; message?: string }> {
+    try {
+        const candidates = await readCandidates();
+        const filteredCandidates = candidates.filter(c => c.id !== id);
+        
+        if (filteredCandidates.length === candidates.length) {
+            return { success: false, message: "Candidate not found" };
+        }
+        
+        await writeCandidates(filteredCandidates);
         return { success: true };
+    } catch (error) {
+        console.error("Error deleting candidate:", error);
+        return { success: false, message: "Failed to delete candidate" };
     }
-    return { success: false, message: "Candidate not found." };
+}
+
+export async function getCandidate(id: string): Promise<Candidate | null> {
+    try {
+        const candidates = await readCandidates();
+        return candidates.find(c => c.id === id) || null;
+    } catch (error) {
+        console.error("Error getting candidate:", error);
+        return null;
+    }
+}
+
+export async function initializeStore(): Promise<void> {
+    try {
+        const store = getCandidatesStore();
+        const data = await store.get(CANDIDATES_KEY, { type: 'json' });
+        
+        if (!data) {
+            console.log("Initializing empty candidates store...");
+            await store.setJSON(CANDIDATES_KEY, []);
+            await store.setJSON(COUNTER_KEY, { value: 0 });
+            console.log("Store initialized successfully");
+        } else {
+            console.log("Store already initialized");
+        }
+    } catch (error) {
+        console.error("Error initializing store:", error);
+    }
 }
