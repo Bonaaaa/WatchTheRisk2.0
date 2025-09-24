@@ -20,16 +20,27 @@ export async function handleAssessCreditRisk(input: AssessCreditRiskInput) {
 
 // This new action is dedicated to saving the candidate.
 export async function handleSaveCandidate(applicantData: AssessCreditRiskInput, assessmentResult: AssessCreditRiskOutput) {
-    await addCandidate({
-        name: applicantData.name,
-        email: applicantData.email,
-        creditScore: Number(applicantData.creditScore),
-        loanAmount: Number(applicantData.loanAmount),
-        risk: assessmentResult.riskAssessment as "Low" | "Medium" | "High",
-        status: assessmentResult.approvedLoanAmount > 0 ? "Approved" : "Rejected",
-        riskFactors: assessmentResult.riskFactors,
-    });
-
-    // Revalidate the candidates page to show the new entry
-    revalidatePath('/candidates');
+    try {
+        const result = await addCandidate({
+            name: applicantData.name,
+            email: applicantData.email,
+            creditScore: Number(applicantData.creditScore),
+            loanAmount: Number(applicantData.loanAmount),
+            risk: assessmentResult.riskAssessment as "Low" | "Medium" | "High",
+            status: assessmentResult.approvedLoanAmount > 0 ? "Approved" : "Rejected",
+            riskFactors: assessmentResult.riskFactors,
+        });
+        revalidatePath('/candidates');
+        return { success: true, candidate: result };
+    } catch (error) {
+        console.error("Server action error:", error);
+    
+        // Return the actual error message for debugging
+        const message = error instanceof Error ? error.message : "Unknown error occurred";
+        return { 
+          success: false, 
+          error: message,
+          details: error instanceof Error ? error.stack : String(error)
+        };
+    }
 }

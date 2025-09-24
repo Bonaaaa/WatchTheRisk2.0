@@ -28,25 +28,43 @@ const COUNTER_KEY = 'candidates-counter';
 const storage = {
   async readCandidates(): Promise<Candidate[]> {
     if (isNetlifyEnvironment()) {
-      // Use Netlify Blobs in production or netlify dev
       try {
         const store = getCandidatesStore();
+        console.log('Attempting to read from Netlify Blobs...');
         const data = await store.get(CANDIDATES_KEY, { type: 'json' });
+        console.log('Successfully read from Netlify Blobs');
         return (data as Candidate[]) || [];
       } catch (error) {
-        console.error("Error reading from Netlify Blob:", error);
-        return [];
+        console.error("Detailed Netlify Blob read error:", error);
+        // Log the full error for debugging
+        if (error instanceof Error) {
+          console.error("Error name:", error.name);
+          console.error("Error message:", error.message);
+          console.error("Error stack:", error.stack);
+        }
+        throw error; // Re-throw instead of returning empty array
       }
     } else {
-      // Use local file storage in development
       return await getLocalCandidates();
     }
   },
 
   async writeCandidates(candidates: Candidate[]): Promise<void> {
     if (isNetlifyEnvironment()) {
-      const store = getCandidatesStore();
-      await store.setJSON(CANDIDATES_KEY, candidates);
+      try {
+        const store = getCandidatesStore();
+        console.log('Attempting to write to Netlify Blobs...');
+        await store.setJSON(CANDIDATES_KEY, candidates);
+        console.log('Successfully wrote to Netlify Blobs');
+      } catch (error) {
+        console.error("Detailed Netlify Blob write error:", error);
+        if (error instanceof Error) {
+          console.error("Error name:", error.name);
+          console.error("Error message:", error.message);
+          console.error("Error stack:", error.stack);
+        }
+        throw error;
+      }
     } else {
       await saveLocalCandidates(candidates);
     }
@@ -56,6 +74,7 @@ const storage = {
     if (isNetlifyEnvironment()) {
       try {
         const store = getCandidatesStore();
+        console.log('Getting next ID from Netlify Blobs...');
         const counterData = await store.get(COUNTER_KEY, { type: 'json' });
         let counter = 1;
         
@@ -64,13 +83,13 @@ const storage = {
         }
         
         await store.setJSON(COUNTER_KEY, { value: counter });
+        console.log('Successfully updated counter in Netlify Blobs');
         return `CAND-${String(counter).padStart(3, '0')}`;
       } catch (error) {
-        console.error("Error with Netlify counter:", error);
-        return `CAND-${Date.now()}`;
+        console.error("Detailed Netlify counter error:", error);
+        throw error; // Don't fallback to timestamp
       }
     } else {
-      // Local file storage
       const counter = await getLocalCounter();
       const newCounter = counter + 1;
       await saveLocalCounter(newCounter);
